@@ -6,6 +6,13 @@ Angular CLI: 18.2.20
 Node: 20.19.4
 Package Manager: npm 10.8.2
 
+INSTALL PROJECT :
+npm i
+ng serve
+
+
+
+
 
 ภชร พวงสีเคน (ต๋อง) มหาลัยเทคโนโลยีสุรนารี
 
