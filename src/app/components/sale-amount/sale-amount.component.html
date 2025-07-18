@@ -1,0 +1,7 @@
+<form [formGroup]="saleAmountFormGroup" class="col-12">
+    <input class="form-control text-end" placeholder="THB" formControlName="saleAmount"
+    (focus)="setToRaw()" 
+    (blur)="formmat()"
+    (input)="input($event)"
+    >
+</form>

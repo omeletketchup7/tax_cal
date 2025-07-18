@@ -1,0 +1,8 @@
+<form [formGroup]="monthFormGroup">
+    <select class="form-select optionStyle" formControlName="month">
+        <option value="null" disabled hidden>please select month</option>
+        <option *ngFor="let month of monthToSelect" [value]="month.value">
+            {{ month.label }}
+        </option>
+    </select>
+</form>

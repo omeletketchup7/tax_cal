@@ -1,0 +1,7 @@
+<form [formGroup]="taxAmountFormGroup" class="col-12">
+    <input class="form-control text-end" placeholder="THB" formControlName="taxAmount"
+    (focus)="setToRaw()" 
+    (blur)="formmat()"
+    (input)="input($event)">
+    <p class="text-danger mt-2" *ngIf="!isWrongVAT">* VAT is Wrong</p>
+</form>

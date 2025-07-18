@@ -1,0 +1,6 @@
+<form [formGroup]="surchargeFormGroup" class="col-12">
+    <input class="form-control text-end" placeholder="THB" formControlName="valueSurcharge"
+    (focus)="setToRaw()" 
+    (blur)="formmat()"
+    aria-label="Disabled input example" disable readonly>
+</form>

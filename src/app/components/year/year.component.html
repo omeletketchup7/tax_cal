@@ -1,0 +1,8 @@
+<form [formGroup]="yearFormGroup">
+    <select class="form-select optionStyle" formControlName="year">
+        <option value="null" selected disabled hidden>please select year</option>
+        <option *ngFor="let year of years" [value]="year.value">
+            {{ year.label }}
+        </option>
+    </select>
+</form>
