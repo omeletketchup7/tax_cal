@@ -29,7 +29,7 @@ ng serve
 Update with sonarqube:
 - ทำส่วนที่ทำไม่เสร็จและแก้ให้ผ่าน sonarqube
 - แก้ type ที่ใช้ผิด ให้เปลี่ยนเป็น primitive type
-- ทำให้ไม่ scan coverage เนื่องจากเกิด faile
+- ทำให้ไม่ scan coverage เนื่องจากเกิด failed
 
 ----------------------------------------------------------------------------
 
