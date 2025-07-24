@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component} from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
@@ -6,11 +6,13 @@ import { FormControl, FormGroup } from '@angular/forms';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   ordinaryFiling = true;
   isFirstPage = true;
+  readyToNext = false;
   selectMonth: string = '';
   selectYear: string = '';
+  isWrongVAT = true;
 
   taxCalForm = new FormGroup({
     saleAmount: new FormControl(),
@@ -38,50 +40,80 @@ export class AppComponent implements OnInit {
     { label: 'December', value: '12' }
   ];
 
+  jsonToShow: any = [];
+
   years: { label: string, value: number }[] = [];
 
-  yearMonthFormGroup = new FormGroup({
-    month: new FormControl(''),
-    year: new FormControl('')
+  additionCalForm = new FormGroup({
+    value: new FormControl("ontime")
   })
 
 
-  ngOnInit(): void {
-    this.taxCalForm.get('saleAmount')?.valueChanges.subscribe(() => {
-      console.log(this.taxCalForm.get('saleAmount')?.value)
-    });
-  }
-
   fromYear(value: any) {
     this.selectYear = value;
+    if ((this.taxCalForm.get('saleAmount')?.value == null) || (this.taxCalForm.get('taxAmount')?.value == null) || (this.selectMonth == '' ||  this.selectMonth == 'undefined' || this.selectMonth == null) || (this.selectYear == '')) {
+      this.readyToNext = false
+    } else {
+      this.readyToNext = true
+    }
   }
-  fromMonth(value: any) {
-    this.selectMonth = value;
+  fromMonth(value: string) {
+    this.selectMonth = String(this.allMonth.find(m => m.value === value)?.label);
+    if ((this.taxCalForm.get('saleAmount')?.value == null) || (this.taxCalForm.get('taxAmount')?.value == null) || (this.selectMonth == '' ||  this.selectMonth == 'undefined' || this.selectMonth == null) || (this.selectYear == '')) {
+      this.readyToNext = false
+    } else {
+      this.readyToNext = true
+    }
   }
   fromRadio(value: boolean) {
     this.ordinaryFiling = value;
   }
   fromSaleAmount(value: any) {
     this.taxCalForm.get('saleAmount')?.setValue(value);
+    if ((this.taxCalForm.get('saleAmount')?.value == null) || (this.taxCalForm.get('taxAmount')?.value == null) || (this.selectMonth == '' ||  this.selectMonth == 'undefined' || this.selectMonth == null) || (this.selectYear == '')) {
+        this.readyToNext = false
+      } else {
+        this.readyToNext = true
+      }
   }
   fromTaxAmount(value: any) {
     this.taxCalForm.get('taxAmount')?.setValue(value);
+    if ((this.taxCalForm.get('saleAmount')?.value == null) || (this.taxCalForm.get('taxAmount')?.value == null) || (this.selectMonth == '' ||  this.selectMonth == 'undefined' || this.selectMonth == null) || (this.selectYear == '')) {
+        this.readyToNext = false
+      } else {
+        this.readyToNext = true
+      }
   }
   fromPenalty(value: any) {
     this.taxAdditionCalForm.get('penalty')?.setValue(value);
   }
   fromSurcharge(value: any) {
     this.taxAdditionCalForm.get('surcharge')?.setValue(value);
+    if ((this.taxCalForm.get('saleAmount')?.value == null) || (this.taxCalForm.get('taxAmount')?.value == null) || (this.selectMonth == '' ||  this.selectMonth == 'undefined' || this.selectMonth == null) || (this.selectYear == '')) {
+        this.readyToNext = false
+      } else {
+        this.readyToNext = true
+      }
   }
   fromTotal(value: any) {
     this.taxAdditionCalForm.get('total')?.setValue(value);
   }
-
-  nextToPage2(){
-    this.isFirstPage = false
+  wrongVATfromTaxAmount(value: any) {
+    this.isWrongVAT = (value);
   }
-  nextToPage1(){
-    this.isFirstPage = true
+
+  nextToPage2() {
+    this.isFirstPage = false
+    if (this.ordinaryFiling) {
+      this.jsonToShow = {
+        ...this.taxCalForm.value
+      }
+    } else {
+      this.jsonToShow = {
+        ...this.taxCalForm.value,
+        ...this.taxAdditionCalForm.value
+      }
+    }
   }
 
 }

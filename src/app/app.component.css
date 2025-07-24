@@ -38,11 +38,43 @@ p{
         margin: 0;
         width: 35px;
         height: 35px;
+        border: 2px solid #cfcfcf;
+        color: rgb(181, 181, 181);
+        background-color: #ffffff;
+
+    }
+    .stepperNumberSelected{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        border-radius: 100%;
+        margin: 0;
+        width: 35px;
+        height: 35px;
         border: 2px solid #000;
-        color: rgb(0, 0, 0);
+        color: rgb(255, 255, 255);
+        background-color: #000;
     }
 }
     .stepperText{
         width: fit-content;
+        color: rgb(163, 163, 163);
     }
+    .stepperTextSelected{
+        width: fit-content;
+        color: rgb(0, 0, 0);
+        font-weight: 400;
+    }
+}
+
+.btn-dark:disabled{
+    background-color: #cacaca;
+    border-color: #dcdcdc;
+    color: #ffffff;
+}
+
+.borderLine{
+    border: rgba(0, 0, 0, 0.1) 3px solid;
+    border-radius: 10px;
 }

@@ -56,7 +56,7 @@ export class TotalAmountComponent {
   }
 
   formmat() {
-    if ((!isNaN(parseFloat(this.penaltyToTotal))) || (!isNaN(parseFloat(this.taxAmountToTotal))) || (!isNaN(parseFloat(this.surchargeToTotal)))) {
+    if (this.totalFormGroup.get('valueTotal')?.value) {
       const input = this.totalFormGroup.get('valueTotal')?.value;
       const formatted = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
@@ -64,6 +64,7 @@ export class TotalAmountComponent {
       }).format(input);
       this.totalFormGroup.get('valueTotal')?.setValue(formatted, { emitEvent: false });
     } else {
+      this.totalValue = null;
       this.totalFormGroup.get('valueTotal')?.setValue('', { emitEvent: false });
     }
   }
@@ -77,7 +78,7 @@ export class TotalAmountComponent {
       }
     } else {
       this.totalValue = null;
-      this.totalFormGroup.get('valueTotal')?.setValue(null, { emitEvent: false });
+      this.totalFormGroup.get('valueTotal')?.setValue('', { emitEvent: false });
     }
   }
 

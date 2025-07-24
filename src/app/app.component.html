@@ -10,9 +10,9 @@
       <div class="stepperNumberAndText  ">
         <div class="stepperNumberAndTextStyle justify-content-center d-flex row">
           <div class="stepperNumberContainer col-12 d-flex justify-content-center">
-            <p class="stepperNumber">1</p>
+            <p [ngClass]="isFirstPage ? 'stepperNumberSelected' : 'stepperNumber'">1</p>
           </div>
-          <p class="stepperText col-12 mt-3">Input Detail</p>
+          <p class=" col-12 mt-3" [ngClass]="isFirstPage ? 'stepperTextSelected' : 'stepperText'">Input Detail</p>
         </div>
       </div>
     </div>
@@ -25,9 +25,9 @@
       <div class="stepperNumberAndText ">
         <div class="stepperNumberAndTextStyle justify-content-center d-flex row">
           <div class="stepperNumberContainer col-12 d-flex justify-content-center">
-            <p class="stepperNumber">2</p>
+            <p [ngClass]="!isFirstPage ? 'stepperNumberSelected' : 'stepperNumber'">2</p>
           </div>
-          <p class="stepperText col-12 mt-3">Review & Comfirm</p>
+          <p class="col-12 mt-3" [ngClass]="!isFirstPage ? 'stepperTextSelected' : 'stepperText'">Review & Comfirm</p>
         </div>
       </div>
     </div>
@@ -41,7 +41,7 @@
 
   <div class="justify-content-center d-flex">
     <div class="col-md-8">
-      <h2 class="mb-4 mt-5">1. Tax Filing Detail</h2>
+      <h2 class="mb-4 mt-5">1. Declaration</h2>
       <div class="line"></div>
       <div class="mt-5">
         <h6 class="pb-3">Type of filing</h6>
@@ -71,31 +71,23 @@
             <div class="col-5 d-flex justify-content-center">
               <div>
                 <h6 class="mt-5 pb-3">Type</h6>
-                <form [formGroup]="yearMonthFormGroup" class="d-flex">
-                  <select class="form-select optionStyle  me-4" formControlName="year">
-                    <option value="" disabled hidden>please select year</option>
-                    <option *ngFor="let month of years" [value]="month.value">
-                      {{ month.label }}
-                    </option>
+                <form [formGroup]="additionCalForm" class="d-flex">
+                  <select class="form-select optionStyle  me-4" formControlName="value">
+                    <option value="ontime" selected>On-Time</option>
+                    <option value="late">Late</option>
                   </select>
                 </form>
               </div>
             </div>
           </div>
         </div>
-
-
-
       </div>
-
-
     </div>
   </div>
   <div class="justify-content-center d-flex mt-5">
     <div class="col-md-8">
       <h2 class="mb-4 mt-5">2. Tax Computation</h2>
       <div class="line"></div>
-
       <div class="mt-5">
         <h6 class="pb-3">Provide total taxable electronic service</h6>
         <div class="container">
@@ -111,8 +103,8 @@
               <p>2. Total VAT to be remitted (7% of 1.)</p>
             </div>
             <app-tax-amount class="col-5 justify-content-end d-flex"
-              [taxAmountFromParent]="taxCalForm.get('saleAmount')?.value"
-              (sentTaxAmount)="fromTaxAmount($event)"></app-tax-amount>
+              [taxAmountFromParent]="taxCalForm.get('saleAmount')?.value" (sentTaxAmount)="fromTaxAmount($event)"
+              (sentWrongVAT)="wrongVATfromTaxAmount($event)"></app-tax-amount>
           </div>
         </div>
       </div>
@@ -149,26 +141,102 @@
     </div>
   </div>
 </div>
-
-
-
 <div *ngIf="!isFirstPage">
+  <div class="justify-content-center d-flex mt-5 pb-2">
+    <div class="col-8 borderLine ps-5 pe-5 pb-3 mt-2 mb-5">
 
-  <div class="justify-content-center d-flex mt-5 pb-5">
-    <div class="col-md-8">
-      <h2 class="mb-4 mt-5">Tax Filing Detail</h2>
-      <div class="line"></div>
-      <div class="mt-5">
-        <h6 class="pb-3">Provide total taxable electronic service</h6>
-        <div class="container">
-          <div class="row col-12 mb-3">
-            <div class="col-7">
-              <p>1. Total value of taxable electronic service exclusive of VAT</p>
+      <div class="col-12">
+        <h2 class="mb-4 mt-5">Tax Filing Detail</h2>
+        <div class="line"></div>
+        <div class="mt-4">
+          <div class="container col-12" *ngIf="ordinaryFiling">
+            <div class="row">
+              <h6 class="col-2 pb-3">Type of filing</h6>
+              <p class="col-3">Ordinary Filing</p>
+            </div>
+          </div>
+          <div class="container col-12" *ngIf="!ordinaryFiling">
+            <div class="row">
+              <h6 class="col-2 pb-3">Type of filing</h6>
+              <p class="col-3">Additional Filing</p>
+            </div>
+          </div>
+          <div class="container col-12">
+            <div class="row">
+              <h6 class="col-2 pb-3">VAT Month</h6>
+              <p class="col-3">{{selectMonth}} {{selectYear}}</p>
             </div>
           </div>
         </div>
       </div>
+
+      <div class="col-12">
+        <h2 class="mb-4 mt-5">Tax Computation</h2>
+        <div class="line"></div>
+        <div class="mt-4">
+          <div class="container col-12">
+            <div class="row">
+              <h6 class="col-7 pb-3">Total value of taxable electronic service exclusive of VAT</h6>
+              <p class="col-5 text-end">{{taxCalForm.get('saleAmount')?.value | number:'0.2-2'}} THB</p>
+            </div>
+          </div>
+          <div class="container col-12 mt-2">
+            <div class="row">
+              <div class="col-7 pb-3">
+                <h6>Total VAT to be remitted</h6>
+                <p>(7% of Total value of taxable electronic service exclusive of VAT)</p>
+              </div>
+              <p class="col-5 text-end">{{taxCalForm.get('taxAmount')?.value | number:'0.2-2'}} THB</p>
+            </div>
+          </div>
+          <div class="container col-12 mt-2" *ngIf="!ordinaryFiling">
+            <div class="row">
+              <h6 class="col-7 pb-3">Surcharge</h6>
+              <p class="col-5 text-end">{{taxAdditionCalForm.get('surcharge')?.value | number:'0.2-2'}} THB</p>
+            </div>
+          </div>
+          <div class="container col-12 mt-2" *ngIf="!ordinaryFiling">
+            <div class="row">
+              <h6 class="col-7 pb-3">Penalty</h6>
+              <p class="col-5 text-end">{{taxAdditionCalForm.get('penalty')?.value | number:'0.2-2'}} THB</p>
+            </div>
+          </div>
+          <div class="container col-12 mt-2" *ngIf="!ordinaryFiling">
+            <div class="row">
+              <h6 class="col-7 pb-3">Total amount of VAT, Surcharge, and Penalty to be remitted</h6>
+              <h6 class="col-5 text-end">{{taxAdditionCalForm.get('total')?.value | number:'0.2-2'}} THB</h6>
+            </div>
+          </div>
+
+          <div class="container col-12" *ngIf="ordinaryFiling">
+            <div class="row">
+              <div class="col-7 pb-3">
+                <h6>Total Amount Payable</h6>
+              </div>
+              <h6 class="col-5 text-end">{{taxCalForm.get('taxAmount')?.value | number:'0.2-2'}} THB</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-12">
+        <h2 class="mb-4 mt-5">Declaration</h2>
+        <div class="line"></div>
+        <div class="mt-4">
+          <div class="container col-12">
+            <div class="row">
+              <p class="col-12">I hereby certify that information given above are true and correct and agree to be bound
+                by such information.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
     </div>
+
   </div>
 
 </div>
@@ -176,14 +244,33 @@
 
 
 
-
+<div class="justify-content-center d-flex pb-5" *ngIf="!isFirstPage">
+  <div class="col-md-8 d-flex justify-content-center">
+    <button class="btn btn-dark ps-4 pe-4 " data-bs-toggle="modal" data-bs-target="#exampleModal">Confirm and
+      submit</button>
+  </div>
+</div>
 <div class="justify-content-center d-flex mt-5 pb-5" *ngIf="isFirstPage">
-  <div class="col-md-8">
-    <button class="btn btn-primary" (click)="nextToPage2()">Next</button>
+  <div class="col-md-8 d-flex justify-content-end">
+    <button class="btn btn-dark me-4 ps-4 pe-4 " (click)="nextToPage2()"
+      [disabled]="(!isWrongVAT) || !readyToNext">Next</button>
   </div>
 </div>
-<div class="justify-content-center d-flex mt-5 pb-5" *ngIf="!isFirstPage">
-  <div class="col-md-8">
-    <button class="btn btn-primary" (click)="nextToPage1()">Next</button>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">JSON</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <pre>{{ jsonToShow | json }}</pre>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
   </div>
 </div>

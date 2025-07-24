@@ -10,6 +10,7 @@ export class TaxAmountComponent {
 
   @Input() taxAmountFromParent: any;
   @Output() sentTaxAmount = new EventEmitter<any>();
+  @Output() sentWrongVAT = new EventEmitter<any>();
 
   taxAmountRAW: any;
   isWrongVAT = true;
@@ -22,8 +23,10 @@ export class TaxAmountComponent {
     this.taxAmountFormGroup.get('taxAmount')?.valueChanges.subscribe((value) => {
       if ((((Number(value)) - 20.00) > (this.taxAmountFromParent * 0.07)) || (((Number(value)) + 20.00) < (this.taxAmountFromParent * 0.07))) {
         this.isWrongVAT = false;
+        this.sendWrongVAT()
       } else {
         this.isWrongVAT = true;
+        this.sendWrongVAT()
       }
       if (!(value == '')) {
         this.taxAmountRAW = parseFloat(value).toFixed(2);
@@ -62,6 +65,9 @@ export class TaxAmountComponent {
 
   sendTaxAmount(value: any) {
     this.sentTaxAmount.emit(value);
+  }
+  sendWrongVAT() {
+    this.sentWrongVAT.emit(this.isWrongVAT);
   }
 
   formmat() {
